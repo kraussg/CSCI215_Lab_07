@@ -14,7 +14,8 @@ var bgImage = new Image();
 
 // Is called when the window loads;
 function init() {
-	
+	mario = new Image();
+	bgImage = new Image();
 	// Initialize Mario Object
 	// TODO: Put Mario on the ground instead of the cloud
 	Mario = {
@@ -23,6 +24,7 @@ function init() {
 		w: 50,
 		h: 80,
 		JumpSound: new Audio('jump.wav'),
+		BackgroundSound: new Audio("mario_08.wav"),
 		Image: (function() {
 			var temp = new Image();
 			temp.src = "mario1.png";
@@ -50,12 +52,14 @@ function draw() {
 	// loaded, you must do it this way
 	bgImage.onload = function(){
 		ctx.drawImage(bgImage, 0, 0);
+		ctx.drawImage(mario, 100, 615, 50, 80);
 
     }
 
 	/*
 	 * TODO: Draw Mario's initial image
 	 */
+		//Mario.Image.src = "mario1.png";
 
 
 	/////////////////////////////////////////////////////////////////
@@ -73,8 +77,11 @@ function draw() {
 			ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
 			// Change the y value each time 
 			Mario.y -= 5; // move 5 px up
+			//ctx.drawImage(bgImage, 0, 0 );// g adddddddddddddddddd
+			//ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);//g add
 		}else if(Mario.y <= 200 && Mario.moving == "up"){
 			Mario.moving = "down";
+			//Mario.y +=5; //g addddddddddd
 		} else if(Mario.y < 280 && Mario.moving == "down"){
 			Mario.Image.src = "mario2.png";
 			ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
@@ -107,9 +114,25 @@ function draw() {
     	var keycode = e.charCode || e.keyCode; // any kind of key
 		console.log(keycode);
 		// The user wants Mario to jump:
-    	if(keycode === 13 && Mario.moving == "no") {  
+    	if(keycode === 13 && Mario.moving == "no") {
+    		Mario.moving = "up"
         	Mario.timer = setInterval(render, Mario.timerInterval); 
     	}
+    	if(keycode === 37 && Mario.x >0){
+    		Mario.moving = "left";
+    		mario.src = "marioturnsleft.png";
+    		ctx.drawImage(mario, Mario.x, Mario.y, Mario.w, Mario.h )
+    		Mario.timer = setTimeout(faceForward, 200);
+			lef(Mario.moving);
+		}
+		if(keycode=== 39 && Mario.x<1150){
+			Mario.moving = "right";
+			Mario.x += 5;
+			mario.src = "marioturnsright.png";
+            ctx.drawImage(mario, Mario.x, Mario.y, Mario.w, Mario.h )
+			Mario.timer = setTimeout(faceForward, 200);
+            right(Mario.moving);
+        }
 
 
 
@@ -120,7 +143,7 @@ function draw() {
      * TODO: to face Mario forward after 200 ms. HINT: setTimeout(function, timeInMilliSecs)
      */
     document.body.onkeyup = function(e) {  // listen for a key
-
+		setTimeout(faceForward(), 200);
     }
 
 
@@ -128,7 +151,10 @@ function draw() {
      * TODO: Face Mario forward. Do not forget to draw the background image first
      */
     function faceForward() {
-
+		ctx.drawImage(bgImage, 0, 0);
+		Mario.Image.src = "mario1.png";
+		ctx.drawImage(mario, Mario.x, Mario.y, Mario.w, Mario.h);
+		//clearTimeout();
     }
 	
 } // close draw() 
